@@ -1,0 +1,10 @@
+# Permalinks
+permalink:           pretty
+
+# Setup
+title:               Argo Graph
+url:                 "https://poloclub.github.io"
+baseurl:             "/argo-graph"
+
+# Google Analytics Tracking Code
+ga_tracking_code:    UA-116657822-2
