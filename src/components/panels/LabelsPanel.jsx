@@ -38,6 +38,7 @@ export default class LabelsPanel extends React.Component {
         >
           Show Labels of Selected Nodes
         </Button>
+        <div style={{height: '30px'}} />
         <h6>Label Size</h6>
         <Slider
           min={0.5}
@@ -48,6 +49,7 @@ export default class LabelsPanel extends React.Component {
           }}
           value={appState.graph.nodes.labelSize}
         />
+        <div style={{height: '30px'}} />
         <h6>Label Length</h6>
         <Slider
           min={1}
