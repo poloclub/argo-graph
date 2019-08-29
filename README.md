@@ -1,5 +1,8 @@
 # Argo Graph (Alpha)
 
+[![Linux/macOS Build Status](https://travis-ci.com/poloclub/argo-graph.svg?branch=master)](https://travis-ci.com/poloclub/argo-graph)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/j06qy0ya9soei9ni?svg=true)](https://ci.appveyor.com/project/oshaikh13/argo-graph-goe0b)
+
 Large-scale cross-platform interactive graph visualization tool built on top of WebGL and Electron.
 
 ## Documentation
