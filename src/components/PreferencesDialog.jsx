@@ -25,6 +25,7 @@ export default class PreferencesDialog extends React.Component {
             checked={appState.preferences.darkMode}
             onChange={() => {
               appState.preferences.darkMode = !appState.preferences.darkMode;
+              appState.preferences.saveUserConfig();
               if (appState.graph.frame) {
                 appState.graph.frame.toggleDark();
               }
@@ -38,7 +39,7 @@ export default class PreferencesDialog extends React.Component {
               onClick={() => {
                 appState.preferences.dialogOpen = false;
               }}
-              text="Save"
+              text="Done"
             />
           </div>
         </div>
