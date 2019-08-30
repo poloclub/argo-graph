@@ -25,6 +25,8 @@ FocusStyleManager.onlyShowFocusOnTabs();
 
 fetchWorkspaceProjects();
 
+appState.preferences.loadUserConfig();
+
 const { DELETE, BACKSPACE, P, U } = Keys;
 
 @keydown
