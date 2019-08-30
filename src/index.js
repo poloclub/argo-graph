@@ -24,9 +24,9 @@ const mkdirp = require("mkdirp");
 // Before entering the rendering process, check whether the default workspace
 // directory exists. If not, create them for the first time.
 const userDataPath = app.getPath("userData"); // Get the system-dependent user data directory
-const workspacePath = path.join(userDataPath, "workspace"); // The directory where projects are stored by default
-if (!fs.existsSync(workspacePath)) {
-  mkdirp.sync(workspacePath); // Create the directory (and its parents if needed) if not present
+const defaultWorkspacePath = path.join(userDataPath, "workspace"); // The directory where projects are stored by default
+if (!fs.existsSync(defaultWorkspacePath)) {
+  mkdirp.sync(defaultWorkspacePath); // Create the directory (and its parents if needed) if not present
 }
 
 // Keep a global reference of the window object, if you don't, the window will

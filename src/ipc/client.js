@@ -45,12 +45,35 @@ import {
   DELETE_FILE,
   RENAME_FILE,
   SHOW_WORKSPACE_FOLDER,
+  LOAD_USER_CONFIG,
+  LOADED_USER_CONFIG,
+  SAVED_USER_CONFIG,
+  SAVE_USER_CONFIG,
 } from '../constants/index';
 import { toaster } from '../notifications/client';
 
 const { ipcRenderer } = require('electron');
 
 export default function registerIPC() {
+  ipcRenderer.on(LOADED_USER_CONFIG, (event, loadedObject) => {
+    // Overwrite PreferenceStore values according to user config values,
+    // if present.
+    if (loadedObject.darkMode) {
+      appState.preferences.darkMode = true;
+    }
+    if (loadedObject.workspace && loadedObject.workspace != '') {
+      appState.preferences.workspacePath = loadedObject.workspace;
+    }
+  });
+
+  ipcRenderer.on(SAVED_USER_CONFIG, (event) => {
+    toaster.show({
+      message: "User configuration saved",
+      intent: Intent.SUCCESS,
+      iconName: 'saved',
+    });
+  });
+
   ipcRenderer.on(LOADED_GRAPH_SQLITE, (event, loadedObject) => {
     runInAction('load saved graph', () => {
       appState.graph.rawGraph = loadedObject.rawGraph;
@@ -341,4 +364,12 @@ export function requestCreateNewProject(projectMetadata) {
 
 export function requestOpenWorkspaceFolder() {
   ipcRenderer.send(SHOW_WORKSPACE_FOLDER);
+}
+
+export function requestLoadUserConfig() {
+  ipcRenderer.send(LOAD_USER_CONFIG);
+}
+
+export function requestSaveUserConfig(userConfig) {
+  ipcRenderer.send(SAVE_USER_CONFIG, userConfig);
 }

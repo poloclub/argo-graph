@@ -8,6 +8,11 @@ export const scales = {
   [SCALE_LOG]: scale.scaleLog
 };
 
+export const LOAD_USER_CONFIG = "load-user-config";
+export const LOADED_USER_CONFIG = "loaded-user-config";
+export const SAVE_USER_CONFIG = "save-user-config";
+export const SAVED_USER_CONFIG = "saved-user-config";
+
 export const FETCH_WORKSPACE_PROJECTS = "fetch-workspace-projects";
 export const FETCHED_WORKSPACE_PROJECTS = "fetched-workspace-projects";
 export const MENU_NEW_PROJECT = "menu-new-project";

@@ -41,11 +41,45 @@ import {
   DELETE_FILE,
   RENAME_FILE,
   SHOW_WORKSPACE_FOLDER,
+  SAVE_USER_CONFIG,
+  LOAD_USER_CONFIG,
+  LOADED_USER_CONFIG,
+  SAVED_USER_CONFIG,
 } from '../constants';
 
 import { readCSV } from '../services/CSVUtils';
 
 let currentDb = null;
+
+// The user data path defined by electron, different depending on OS.
+const USER_DATA_PATH = app.getPath('userData');
+
+// The default workspace folder used by our application,
+// unless the config file contains another path.
+const DEFAULT_WORKSPACE_PATH = path.join(USER_DATA_PATH, 'workspace');
+
+// Application config file (might or might not be present) containing
+// global user preference for this application.
+const USER_CONFIG_FILE_PATH = path.join(USER_DATA_PATH, 'argoconfig.json');
+
+let USER_CONFIG = {
+  workspace: DEFAULT_WORKSPACE_PATH
+};
+
+if (fs.existsSync(USER_CONFIG_FILE_PATH)) {
+  USER_CONFIG = JSON.parse(fs.readFileSync(USER_CONFIG_FILE_PATH));
+} else {
+  // Since the config file doesn't yet exist, create the config file.
+  fs.writeFileSync(USER_CONFIG_FILE_PATH, JSON.stringify(USER_CONFIG));
+}
+
+// Check the config file content and see if there's a different workspace path
+// set by the user.
+let WORKSPACE_PATH = DEFAULT_WORKSPACE_PATH;
+if (USER_CONFIG.workspace && USER_CONFIG.workspace != '') {
+  WORKSPACE_PATH = USER_CONFIG.workspace;
+}
+
 
 var createTempNodeTables = function(name) {
   currentDb.exec(`
@@ -175,14 +209,12 @@ export default function registerIPC(window) {
    * The rendering process is supposed to update state whenever this is called.
    */
   function fetchWorkspaceProjects() {
-      const userDataPath = app.getPath('userData');
-      const workspacePath = path.join(userDataPath, 'workspace');
       const projects = [];
       // Get every directory that is a valid project directory
       // from the default workspace directory
       // A valid project directory contains 'argo-project.json' metadata file
-      fs.readdirSync(workspacePath)
-        .map(name => path.join(workspacePath, name))
+      fs.readdirSync(WORKSPACE_PATH)
+        .map(name => path.join(WORKSPACE_PATH, name))
         .filter((name) => fs.lstatSync(name).isDirectory()
           && fs.existsSync(path.join(name, 'argo-project.json')))
         .forEach((projectDirectoryPath) => {
@@ -215,9 +247,7 @@ export default function registerIPC(window) {
   //   );
   // });
   ipcMain.on(CREATE_NEW_PROJECT, (event, projectMetadata) => {
-    const userDataPath = app.getPath('userData');
-    const workspacePath = path.join(userDataPath, 'workspace');
-    const projectPath = path.join(workspacePath, projectMetadata.name);
+    const projectPath = path.join(WORKSPACE_PATH, projectMetadata.name);
     // Create the project folder and metadata file argo-project.json
     fs.mkdirSync(projectPath);
     fs.writeFileSync(path.join(projectPath, 'argo-project.json'), JSON.stringify(projectMetadata));
@@ -436,9 +466,7 @@ export default function registerIPC(window) {
   });
 
   ipcMain.on(SHOW_WORKSPACE_FOLDER, (event) => {
-    const userDataPath = app.getPath('userData');
-    const workspacePath = path.join(userDataPath, 'workspace');
-    shell.openItem(workspacePath);
+    shell.openItem(WORKSPACE_PATH);
   });
 
   ipcMain.on(CHOOSE_NODE_FILE, () => {
@@ -522,13 +550,20 @@ export default function registerIPC(window) {
       const outputGraph = msg;
 
       // Prepare to save to SQLite
-      const userDataPath = app.getPath('userData');
-      const workspacePath = path.join(userDataPath, 'workspace');
-      const pathToSave = path.join(workspacePath, config.newProjectName, 'data.argograph');
+      const pathToSave = path.join(WORKSPACE_PATH, config.newProjectName, 'data.argograph');
   
       sqlliteSaveHelper(pathToSave, outputGraph);
     });
 
+  });
+
+  ipcMain.on(LOAD_USER_CONFIG, (event) => {
+    window.webContents.send(LOADED_USER_CONFIG, USER_CONFIG);
+  });
+
+  ipcMain.on(SAVE_USER_CONFIG, (event, userConfig) => {
+    fs.writeFileSync(USER_CONFIG_FILE_PATH, JSON.stringify(userConfig));
+    window.webContents.send(SAVED_USER_CONFIG);
   });
 }
 
