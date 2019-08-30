@@ -45,6 +45,8 @@ import {
   LOAD_USER_CONFIG,
   LOADED_USER_CONFIG,
   SAVED_USER_CONFIG,
+  CHANGE_WORKSPACE_FOLDER,
+  CHANGED_WORKSPACE_FOLDER,
 } from '../constants';
 
 import { readCSV } from '../services/CSVUtils';
@@ -557,13 +559,24 @@ export default function registerIPC(window) {
 
   });
 
-  ipcMain.on(LOAD_USER_CONFIG, (event) => {
+  ipcMain.on(LOAD_USER_CONFIG, () => {
     window.webContents.send(LOADED_USER_CONFIG, USER_CONFIG);
   });
 
   ipcMain.on(SAVE_USER_CONFIG, (event, userConfig) => {
     fs.writeFileSync(USER_CONFIG_FILE_PATH, JSON.stringify(userConfig));
     window.webContents.send(SAVED_USER_CONFIG);
+  });
+
+  ipcMain.on(CHANGE_WORKSPACE_FOLDER, () => {
+    dialog.showOpenDialog({
+      properties: ['openDirectory']
+    },
+    filePaths => {
+      if (filePaths && filePaths.length == 1) {
+        window.webContents.send(CHANGED_WORKSPACE_FOLDER, filePaths[0]);
+      }
+    });
   });
 }
 

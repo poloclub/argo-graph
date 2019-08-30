@@ -47,6 +47,8 @@ export const LOADED_GRAPH_STATE = "loaded-graph-state";
 
 export const SHOW_ITEM_IN_FOLDER = "show-item-in-folder";
 export const SHOW_WORKSPACE_FOLDER = 'show-workspace-folder';
+export const CHANGE_WORKSPACE_FOLDER = 'change-workspace-folder';
+export const CHANGED_WORKSPACE_FOLDER = 'changed-workspace-folder';
 
 export const CHOOSE_EDGE_FILE = "choose-edge-file";
 export const CHOSEN_EDGE_FILE = "chosen-edge-file";

@@ -49,6 +49,8 @@ import {
   LOADED_USER_CONFIG,
   SAVED_USER_CONFIG,
   SAVE_USER_CONFIG,
+  CHANGE_WORKSPACE_FOLDER,
+  CHANGED_WORKSPACE_FOLDER,
 } from '../constants/index';
 import { toaster } from '../notifications/client';
 
@@ -221,6 +223,11 @@ export default function registerIPC() {
     }
   });
 
+  ipcRenderer.on(CHANGED_WORKSPACE_FOLDER, (events, newWorkspaceDirectory) => {
+    appState.preferences.workspacePath = newWorkspaceDirectory;
+    appState.preferences.saveUserConfig();
+  });
+
   ipcRenderer.on(MENU_NEW_PROJECT, () => {
     appState.project.isNewProjectDialogOpen = true;
   });
@@ -372,4 +379,8 @@ export function requestLoadUserConfig() {
 
 export function requestSaveUserConfig(userConfig) {
   ipcRenderer.send(SAVE_USER_CONFIG, userConfig);
+}
+
+export function requestChangeWorkspace() {
+  ipcRenderer.send(CHANGE_WORKSPACE_FOLDER);
 }
