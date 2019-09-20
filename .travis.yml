@@ -1,26 +1,29 @@
 language: node_js
-node_js: "10"
+node_js: '10'
 os:
 - linux
 - osx
 dist: trusty
 sudo: false
-
 cache:
   directories:
   - node_modules
-  - $HOME/.cache/electron
-
+  - "$HOME/.cache/electron"
 addons:
   apt:
     packages:
     - fakeroot
     - rpm
-
 install:
 - npm install
 - npm update
-
 script:
 - if test -z "$TRAVIS_TAG"; then npm run make; fi
 after_success: if test -n "$TRAVIS_TAG"; then npm run publish; fi
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: argo-graph
+  local-dir: out/make
+  skip_cleanup: true
