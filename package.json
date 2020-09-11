@@ -76,7 +76,7 @@
     "ngraph.generators": "^0.0.18",
     "ngraph.graph": "^0.0.14",
     "ngraph.pagerank": "^0.1.4",
-    "node-fetch": "^2.0.0",
+    "node-fetch": "^2.6.1",
     "node-machine-id": "^1.1.10",
     "normalize.css": "^8.0.0",
     "pluralize": "^7.0.0",
